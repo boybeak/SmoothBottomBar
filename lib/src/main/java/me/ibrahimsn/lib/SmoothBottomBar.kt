@@ -8,11 +8,13 @@ import android.view.MotionEvent
 import android.annotation.SuppressLint
 import android.animation.ArgbEvaluator
 import android.graphics.*
+import android.util.Log
 import android.view.animation.DecelerateInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import kotlin.math.abs
+import kotlin.math.max
 
 class SmoothBottomBar : View {
 
@@ -87,6 +89,16 @@ class SmoothBottomBar : View {
             paintText.typeface = ResourcesCompat.getFont(context, itemFontFamily)
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val hMode = MeasureSpec.getMode(heightMeasureSpec)
+        var newHMS = heightMeasureSpec
+        if (hMode == MeasureSpec.AT_MOST) {
+            val hSizeNew = max(textHeight(), itemIconSize) + 2 * itemPadding + paddingTop + paddingBottom
+            newHMS = MeasureSpec.makeMeasureSpec(hSizeNew.toInt(), MeasureSpec.EXACTLY)
+        }
+        super.onMeasure(widthMeasureSpec, newHMS)
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
@@ -107,10 +119,12 @@ class SmoothBottomBar : View {
         setActiveItem(activeItem)
     }
 
+    private fun textHeight(): Float = (paintText.descent() + paintText.ascent()) / 2
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val textHeight = (paintText.descent() + paintText.ascent()) / 2
+        val textHeight = textHeight()
 
         for ((i, item) in items.withIndex()) {
             val textLength = paintText.measureText(item.title)

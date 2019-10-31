@@ -9,7 +9,9 @@
     <me.ibrahimsn.lib.SmoothBottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:backgroundColor="@color/colorPrimary"
         app:textColor="@color/colorTextPrimary"
         app:textSize="14sp"
